@@ -2,6 +2,8 @@ from typing import Any, Dict, List, Optional
 from dataclasses import dataclass
 import httpx
 from mcp.server.fastmcp import FastMCP
+import os
+import sys
 
 # Initialize FastMCP server
 mcp = FastMCP("qbittorrent")
@@ -97,11 +99,30 @@ class QBittorrentClient:
         )
         return result is not None
 
+# Utility to get parameter from env or command line
+
+def get_param_value(param_name: str, default=None):
+    # Check command line arguments
+    for arg in sys.argv[1:]:
+        if arg.startswith(f"--{param_name}="):
+            return arg.split("=", 1)[1]
+    # Check environment variables
+    env_name = param_name.upper()
+    return os.environ.get(env_name, default)
+
+# Example: get QBittorrent config from params
+def get_qbittorrent_config_from_params():
+    host = get_param_value("host", "localhost")
+    port = int(get_param_value("port", 8080))
+    username = get_param_value("username", "admin")
+    password = get_param_value("password", "adminadmin")
+    return QBittorrentConfig(host, port, username, password)
+
 # Global client instance
 _client: Optional[QBittorrentClient] = None
 
 @mcp.tool()
-async def connect(host: str, port: int, username: str, password: str) -> str:
+async def connect(host: str = None, port: int = None, username: str = None, password: str = None) -> str:
     """Connect to QBittorrent WebUI.
 
     Args:
@@ -111,9 +132,14 @@ async def connect(host: str, port: int, username: str, password: str) -> str:
         password: WebUI password
     """
     global _client
-    config = QBittorrentConfig(host, port, username, password)
+    # Use provided params, or fallback to global params
+    config = QBittorrentConfig(
+        host or get_param_value("host", "localhost"),
+        int(port or get_param_value("port", 8080)),
+        username or get_param_value("username", "admin"),
+        password or get_param_value("password", "adminadmin")
+    )
     _client = QBittorrentClient(config)
-    
     if await _client._login():
         return "Successfully connected to QBittorrent WebUI"
     return "Failed to connect to QBittorrent WebUI"
@@ -200,5 +226,14 @@ async def add_magnet(magnet_url: str) -> str:
     return "Failed to add torrent"
 
 if __name__ == "__main__":
-    # Initialize and run the server
-    mcp.run(transport='stdio')
+    mode = get_param_value("mode", "stdio")
+    if mode == "rest":
+        try:
+            from mcp.server.restmcp import RestMCP
+        except ImportError:
+            print("RestMCP transport is not available. Please ensure mcp.server.restmcp is installed.")
+            sys.exit(1)
+        mcp_rest = RestMCP("qbittorrent", port=int(get_param_value("rest_port", 8081)), endpoint=get_param_value("endpoint", "/"))
+        mcp_rest.run()
+    else:
+        mcp.run(transport='stdio')

@@ -1,0 +1,8 @@
+# chatmcp.yaml for MCP.so hosting
+name: qbittorrent-mcp
+version: 0.1.0
+description: QBittorrent MCP Server
+entry: qbittorrent-mcp.py
+transport: rest
+port: 8080
+license: MIT
