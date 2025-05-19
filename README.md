@@ -31,6 +31,57 @@ qbittorrent-mcp 旨在让 AI 或自动化系统能够以极简、标准化的方
 pip install qbittorrent-mcp
 ```
 
+### 方法二：uv 安装
+
+```bash
+uv pip install qbittorrent-mcp
+```
+
+### 方法三：配置 Claude Desktop
+
+在 Claude Desktop 配置文件中添加服务器配置：
+- macOS: `~/Library/Application Support/Claude/claude_desktop_config.json`
+- Windows: `%APPDATA%\Claude\claude_desktop_config.json`
+
+添加如下配置：
+```json
+{
+  "mcpServers": {
+    "qbittorrent": {
+      "command": "uvx",
+      "args": [
+        "qbittorrent-mcp"
+      ]
+    }
+  }
+}
+```
+
+### 方法四：从源码安装并配置 Cursor 本地开发环境
+
+在 Cursor IDE 中，可以通过本地配置文件来设置 MCP 服务器：
+- Windows: `C:\Users\用户名\.cursor\mcp.json`
+- macOS: `~/.cursor/mcp.json`
+
+添加如下配置：
+```json
+{
+  "mcpServers": {
+    "qbittorrent": {
+      "command": "uv",
+      "args": [
+        "--directory",
+        "/你的本地项目路径/qbittorrent-mcp/",
+        "run",
+        "qbittorrent-mcp.py"
+      ]
+    }
+  }
+}
+```
+
+这种配置方式适合本地开发和测试使用，可以直接指向本地代码目录。
+
 ### 方法二：源码安装
 
 ```bash
