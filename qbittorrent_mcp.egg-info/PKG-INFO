@@ -1,0 +1,78 @@
+Metadata-Version: 2.4
+Name: qbittorrent-mcp
+Version: 0.1.0
+Summary: QBittorrent MCP Server
+Requires-Python: >=3.11
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: httpx>=0.28.1
+Requires-Dist: mcp[cli]>=1.8.1
+Dynamic: license-file
+
+# qbittorrent-mcp
+
+[![PyPI version](https://badge.fury.io/py/qbittorrent-mcp.svg)](https://pypi.org/project/qbittorrent-mcp/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
+## 项目简介
+
+`qbittorrent-mcp` 是一个基于 MCP 协议的 Python 客户端，支持通过 QBittorrent WebUI API 远程管理种子任务。适用于自动化脚本、机器人集成或自定义管理工具开发。
+
+## 安装方法
+
+推荐通过 PyPI 安装：
+
+```bash
+pip install qbittorrent-mcp
+```
+
+或从源码安装：
+
+```bash
+git clone https://github.com/yourname/qbittorrent-mcp.git
+cd qbittorrent-mcp
+pip install .
+```
+
+## 快速上手
+
+```python
+from qbittorrent_mcp import connect, list_torrents, pause_torrent, resume_torrent, delete_torrent, add_magnet
+
+# 连接 QBittorrent WebUI
+await connect(host="127.0.0.1", port=8080, username="admin", password="adminadmin")
+
+# 获取种子列表
+print(await list_torrents())
+
+# 暂停种子
+torrent_hash = "your_torrent_hash"
+await pause_torrent(torrent_hash)
+
+# 恢复种子
+await resume_torrent(torrent_hash)
+
+# 删除种子
+await delete_torrent(torrent_hash, delete_files=False)
+
+# 添加磁力链接
+await add_magnet("magnet:?xt=urn:btih:...")
+```
+
+## 支持功能
+
+- 连接 QBittorrent WebUI
+- 获取种子列表及详细信息
+- 暂停/恢复种子
+- 删除种子（可选是否删除文件）
+- 添加磁力链接
+
+## 依赖说明
+
+- Python >= 3.7
+- httpx
+- mcp
+
+## 许可证
+
+MIT License

@@ -1,0 +1,8 @@
+LICENSE
+README.md
+pyproject.toml
+qbittorrent_mcp.egg-info/PKG-INFO
+qbittorrent_mcp.egg-info/SOURCES.txt
+qbittorrent_mcp.egg-info/dependency_links.txt
+qbittorrent_mcp.egg-info/requires.txt
+qbittorrent_mcp.egg-info/top_level.txt
